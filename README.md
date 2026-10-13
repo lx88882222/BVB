@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://yoloytang.me/BVB/#leaderboard">
-    <img src="assets/bvb-leaderboard.png" alt="BVB Overall leaderboard: best configuration per model" width="1200">
+    <img src="assets/bvb-leaderboard.png?v=fd9c0992dfd2" alt="BVB Overall leaderboard: best configuration per model" width="1200">
   </a>
 </p>
 
@@ -30,6 +30,8 @@ limit. External asset libraries are not allowed.
 
 ## News
 
+- **[10/13/2026]** Added Muse Wonder (xhigh), Claude Haiku 5.5 (xhigh), and Grok 4.7 (xhigh)
+  to the [leaderboard](https://yoloytang.me/BVB/#leaderboard).
 - **[9/30/2026]** Added GPT-6.1 Sol (xhigh) and Claude Sonnet 5.5 (xhigh) to the
   [leaderboard](https://yoloytang.me/BVB/#leaderboard).
 - **[9/28/2026]** Added Claude Opus 5.5 (high and xhigh), GPT-6 Astra (xhigh),
