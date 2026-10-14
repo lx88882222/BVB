@@ -350,7 +350,7 @@
     const X0 = padLeft + L;
     const valueSize = pitch < 34 ? 10.5 : 12;
     const svg = [];
-    const drawBar = (path, col) => `<path d="${path}" fill="${col}"/>`;
+    const drawBar = (path, col) => `<path class="bar-body" d="${path}" fill="${col}"/>`;
     svg.push(
       `<svg xmlns="${svgNS}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="group" aria-label="${escape(
         `${axisNames[barsAxis]} by ${barsView === "best" ? "model" : "configuration"}, ${n} bars, sorted from highest to lowest. The axis starts at ${yMin}. Use the arrow keys to move between bars.`,
@@ -380,6 +380,7 @@
         `<g class="bar-col" data-run="${escape(r.run)}" tabindex="${i === 0 ? 0 : -1}" role="img" aria-label="${escape(label)}">` +
           `<rect class="hit" x="${cx - pitch / 2}" y="${T - 18}" width="${pitch}" height="${plotH + 18 + 34}" rx="3"/>` +
           drawBar(path, vendorColor(r.vendor)) +
+          `<rect class="bar-cap" x="${x0}" y="${top}" width="${barW}" height="${Math.min(2, h)}" fill="${vendorColor(r.vendor)}" aria-hidden="true"/>` +
           `<text x="${cx}" y="${top - 6}" text-anchor="middle" font-size="${valueSize}" font-weight="600" fill="${C.ink}">${score(v, 1)}</text>` +
           (src
             ? `<image href="${escape(src)}" x="${cx - 8}" y="${base + 9}" width="16" height="16" aria-hidden="true"/>`
