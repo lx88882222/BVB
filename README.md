@@ -30,7 +30,7 @@ limit. External asset libraries are not allowed.
 
 ## News
 
-- **[10/13/2026]** Added Muse Wonder (xhigh), Claude Haiku 5.5 (xhigh), and Grok 4.7 (xhigh)
+- **[10/13/2026]** Added Muse Wonder (xhigh), Claude Haiku 5.5 (xhigh), Grok 4.7 (xhigh), DeepSeek V4.1 Flash (max), and Gemini 4 Argon (high)
   to the [leaderboard](https://yoloytang.me/BVB/#leaderboard).
 - **[9/30/2026]** Added GPT-6.1 Sol (xhigh) and Claude Sonnet 5.5 (xhigh) to the
   [leaderboard](https://yoloytang.me/BVB/#leaderboard).
