@@ -316,6 +316,38 @@
     }
     return [...rows].sort((a, b) => b[barsAxis] - a[barsAxis] || a.rank - b.rank);
   }
+  // Match multicolor marks using their local logo colors. Each gradient spans
+  // the bar itself, so the same brand treatment survives metric/range changes.
+  const barGradients = {
+    Google: { id: "gemini", colors: ["#3186FF", "#F94543", "#FABC12", "#08B962"] },
+    Alibaba: { id: "qwen", colors: ["#6336E7", "#6F69F7"], horizontal: true },
+    Meta: { id: "meta", colors: ["#0064E0", "#0081FB"] },
+    MiniMax: { id: "minimax", colors: ["#E2167E", "#FE603C"], horizontal: true },
+    ByteDance: { id: "seed", colors: ["#A060F0", "#1030F0", "#30E0B0"] },
+  };
+  const xaiBarColor = () => theme() === "dark" ? "#c3c7cf" : "#49515e";
+  function barPaint(vendor) {
+    const gradient = barGradients[vendor];
+    if (gradient)
+      return { body: `url(#bars-${gradient.id})`, cap: gradient.colors[0] };
+    if (vendor === "xAI")
+      return { body: "url(#bars-xai)", cap: xaiBarColor() };
+    const color = vendor === "Anthropic" && theme() === "light"
+      ? "#D97757"
+      : vendorColor(vendor);
+    return { body: color, cap: color };
+  }
+  function barPaintDefs() {
+    const gradients = Object.values(barGradients).map(({ id, colors, horizontal }) =>
+      `<linearGradient id="bars-${id}" x1="0%" y1="0%" x2="${horizontal ? 100 : 0}%" y2="${horizontal ? 0 : 100}%">` +
+      colors.map((color, i) => `<stop offset="${100 * i / (colors.length - 1)}%" stop-color="${color}"/>`).join("") +
+      `</linearGradient>`,
+    ).join("");
+    // A quiet diagonal texture distinguishes the monochrome xAI mark from GPT.
+    return `<defs>${gradients}<pattern id="bars-xai" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">` +
+      `<rect width="7" height="7" fill="${xaiBarColor()}"/><rect width="1" height="7" fill="${palette().page}" fill-opacity="0.24"/>` +
+      `</pattern></defs>`;
+  }
   function renderBars() {
     const C = palette();
     const rows = barRows();
@@ -355,6 +387,7 @@
         `${axisNames[barsAxis]} by ${barsView === "best" ? "model" : "configuration"}, ${n} bars, sorted from highest to lowest. The axis starts at ${yMin}. Use the arrow keys to move between bars.`,
       )}">`,
     );
+    svg.push(barPaintDefs());
     for (let t = yMin; t <= yMax; t += yStep) {
       svg.push(
         `<line x1="${X0}" x2="${W - R}" y1="${y(t)}" y2="${y(t)}" stroke="${
@@ -374,12 +407,13 @@
       const x0 = cx - barW / 2;
       const path = `M${x0},${base}V${top}H${x0 + barW}V${base}Z`;
       const src = logoSrc(r, theme());
+      const paint = barPaint(r.vendor);
       const label = `${configName(r)}. ${axisNames[barsAxis]} ${score(v, barsAxis === "overall" ? 2 : 1)}.`;
       svg.push(
         `<g class="bar-col" data-run="${escape(r.run)}" tabindex="${i === 0 ? 0 : -1}" role="img" aria-label="${escape(label)}">` +
           `<rect class="hit" x="${cx - pitch / 2}" y="${T - 18}" width="${pitch}" height="${plotH + 18 + 34}" rx="3"/>` +
-          drawBar(path, vendorColor(r.vendor)) +
-          `<rect class="bar-cap" x="${x0}" y="${top}" width="${barW}" height="${Math.min(2, h)}" fill="${vendorColor(r.vendor)}" aria-hidden="true"/>` +
+          drawBar(path, paint.body) +
+          `<rect class="bar-cap" x="${x0}" y="${top}" width="${barW}" height="${Math.min(2, h)}" fill="${paint.cap}" aria-hidden="true"/>` +
           `<text x="${cx}" y="${top - 6}" text-anchor="middle" font-size="${valueSize}" font-weight="600" fill="${C.ink}">${score(v, 1)}</text>` +
           (src
             ? `<image href="${escape(src)}" x="${cx - 8}" y="${base + 9}" width="16" height="16" aria-hidden="true"/>`
