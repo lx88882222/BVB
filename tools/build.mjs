@@ -33,6 +33,7 @@ const logos = {
   "Moonshot AI": "kimi.png",
   MiniMax: "minimax-color.svg",
   ByteDance: "seed.png",
+  DeepSeek: "deepseek-color.svg",
 };
 const mono = new Set(["openai.svg", "grok.svg", "glm.png", "kimi.png"]);
 const tasks = [

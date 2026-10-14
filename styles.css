@@ -806,6 +806,32 @@ html.js .board:not([data-view="table"]) .table-only {
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
 }
+.chart-view {
+  min-width: 0;
+}
+.bars-navigation {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.bars-navigation button {
+  width: 36px;
+  height: 32px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 5px;
+  background: var(--page);
+  color: var(--ink);
+  cursor: pointer;
+}
+.bars-navigation button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.bars-navigation input {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--accent);
+}
 .bar-chart svg {
   max-width: none;
   font-family: var(--sans);

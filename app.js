@@ -52,6 +52,7 @@
       "Moonshot AI": "#687287",
       MiniMax: "#ff4265",
       ByteDance: "#00c6e4",
+      DeepSeek: "#4d6bfe",
     },
     dark: {
       OpenAI: "#e5e5e1",
@@ -64,6 +65,7 @@
       "Moonshot AI": "#a2acc2",
       MiniMax: "#ff627f",
       ByteDance: "#13d2ec",
+      DeepSeek: "#8096ff",
     },
   };
 
@@ -82,6 +84,7 @@
     "Moonshot AI": "kimi.png",
     MiniMax: "minimax-color.svg",
     ByteDance: "seed.png",
+    DeepSeek: "deepseek-color.svg",
   };
   // Dark single-color marks, which need a light version on the dark page.
   const monoLogos = {
@@ -104,7 +107,7 @@
     costUsd: "Cost per scene",
   };
   const lowerIsBetter = new Set(["costUsd"]);
-  const effortOrder = ["none", "low", "medium", "high", "xhigh"];
+  const effortOrder = ["none", "low", "medium", "high", "xhigh", "max"];
   const tasks = [
     "object_counting",
     "object_abs_distance",
@@ -318,7 +321,6 @@
     const rows = barRows();
     const n = rows.length;
     const box = document.querySelector(".bars-scroll");
-    const avail = Math.max(320, box.clientWidth);
     const L = 36,
       R = 4,
       T = 22,
@@ -326,15 +328,12 @@
     // Rotated labels hang to the left of their bar, so reserve room for
     // the first few before the plot starts.
     const labelWidth = (r) => (r.name.length + r.effort.length + 1) * 6.6 * 0.72 + 6;
-    let pitch = Math.max(24, Math.min(56, (avail - L - R) / n));
-    let padLeft = 0;
-    for (let pass = 0; pass < 2; pass++) {
-      padLeft = Math.max(
-        0,
-        ...rows.slice(0, 6).map((r, i) => labelWidth(r) - (L + pitch * i + pitch / 2)),
-      );
-      pitch = Math.max(24, Math.min(56, (avail - L - R - padLeft) / n));
-    }
+    // Keep columns and labels readable as the leaderboard grows.
+    const pitch = 56;
+    const padLeft = Math.max(
+      0,
+      ...rows.slice(0, 6).map((r, i) => labelWidth(r) - (L + pitch * i + pitch / 2)),
+    );
     const W = Math.round(padLeft + L + R + pitch * n);
     const labelH = Math.ceil(36 + Math.max(...rows.map(labelWidth)) + 8);
     const H = T + plotH + labelH;
@@ -393,6 +392,7 @@
     });
     svg.push("</svg>");
     $("bar-chart").innerHTML = svg.join("");
+    syncBarsScroll();
     $("bars-sub").textContent = `${axisNames[barsAxis]} score of ${
       barsView === "best"
         ? `the configuration with the highest ${axisNames[barsAxis]} for each model`
@@ -445,6 +445,30 @@
     barsView = $("bars-view").value;
     renderBars();
   });
+  function syncBarsScroll() {
+    const box = document.querySelector(".bars-scroll");
+    const max = Math.max(0, box.scrollWidth - box.clientWidth);
+    const position = $("bars-position");
+    position.max = String(max);
+    position.value = String(box.scrollLeft);
+    position.disabled = max === 0;
+    $("bars-prev").disabled = box.scrollLeft <= 1;
+    $("bars-next").disabled = box.scrollLeft >= max - 1;
+  }
+  const barsScroll = document.querySelector(".bars-scroll");
+  barsScroll.addEventListener("scroll", syncBarsScroll, { passive: true });
+  $("bars-position").addEventListener("input", (e) => {
+    barsScroll.scrollLeft = Number(e.target.value);
+    syncBarsScroll();
+  });
+  for (const [id, direction] of [["bars-prev", -1], ["bars-next", 1]]) {
+    $(id).addEventListener("click", () => {
+      barsScroll.scrollBy({
+        left: direction * barsScroll.clientWidth * 0.75,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      });
+    });
+  }
   renderBars();
   onResize(document.querySelector(".bars-scroll"), renderBars);
 
