@@ -844,7 +844,7 @@ html.js .board:not([data-view="table"]) .table-only {
   cursor: default;
 }
 .bar-col .bar-body {
-  fill-opacity: 0.5;
+  fill-opacity: 0.7;
 }
 .bar-col .bar-cap {
   fill-opacity: 1;
