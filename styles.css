@@ -843,6 +843,9 @@ html.js .board:not([data-view="table"]) .table-only {
 .bar-col {
   cursor: default;
 }
+.bar-col > path {
+  fill-opacity: 0.84;
+}
 .bar-col:focus {
   outline: none;
 }
