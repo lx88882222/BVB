@@ -803,8 +803,12 @@ html.js .board:not([data-view="table"]) .table-only {
 .bars-scroll {
   overflow-x: auto;
   overflow-y: hidden;
+  scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
+}
+.bars-scroll::-webkit-scrollbar {
+  display: none;
 }
 .chart-view {
   min-width: 0;
