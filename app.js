@@ -320,7 +320,6 @@
     const C = palette();
     const rows = barRows();
     const n = rows.length;
-    const box = document.querySelector(".bars-scroll");
     const L = 36,
       R = 4,
       T = 22,
@@ -328,8 +327,8 @@
     // Rotated labels hang to the left of their bar, so reserve room for
     // the first few before the plot starts.
     const labelWidth = (r) => (r.name.length + r.effort.length + 1) * 6.6 * 0.72 + 6;
-    // Keep columns and labels readable as the leaderboard grows.
-    const pitch = 56;
+    // Fit more models in view without shrinking labels or removing scrolling.
+    const pitch = 36;
     const padLeft = Math.max(
       0,
       ...rows.slice(0, 6).map((r, i) => labelWidth(r) - (L + pitch * i + pitch / 2)),
@@ -337,7 +336,7 @@
     const W = Math.round(padLeft + L + R + pitch * n);
     const labelH = Math.ceil(36 + Math.max(...rows.map(labelWidth)) + 8);
     const H = T + plotH + labelH;
-    const barW = Math.min(34, Math.round(pitch * 0.74));
+    const barW = Math.min(24, Math.round(pitch * 0.67));
     // The axis starts at the multiple of ten below the lowest score, so
     // differences between models stay visible. A break mark shows the cut.
     const max = Math.max(...rows.map((r) => r[barsAxis]));
