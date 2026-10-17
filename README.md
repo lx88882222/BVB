@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://yoloytang.me/BVB/#leaderboard">
-    <img src="assets/bvb-leaderboard.png?v=d153017fbe73" alt="BVB Overall leaderboard: best configuration per model" width="1200">
+    <img src="assets/bvb-leaderboard.png?v=cb769088ebfc" alt="BVB Overall leaderboard: best configuration per model" width="1200">
   </a>
 </p>
 
@@ -30,6 +30,8 @@ limit. External asset libraries are not allowed.
 
 ## News
 
+- **[10/17/2026]** Added DeepSeek V4.1 Flash 1017 (max) to the
+  [leaderboard](https://yoloytang.me/BVB/#leaderboard).
 - **[10/13/2026]** Added Muse Wonder (xhigh), Claude Haiku 5.5 (xhigh), Grok 4.7 (xhigh), DeepSeek V4.1 Flash (max), and Gemini 4 Argon (high)
   to the [leaderboard](https://yoloytang.me/BVB/#leaderboard).
 - **[9/30/2026]** Added GPT-6.1 Sol (xhigh) and Claude Sonnet 5.5 (xhigh) to the
