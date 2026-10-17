@@ -324,6 +324,7 @@
     Meta: { id: "meta", colors: ["#0064E0", "#0081FB"] },
     MiniMax: { id: "minimax", colors: ["#E2167E", "#FE603C"], horizontal: true },
     ByteDance: { id: "seed", colors: ["#A060F0", "#1030F0", "#30E0B0"] },
+    DeepSeek: { id: "deepseek-water", colors: ["#69D5FF", "#2B9FF4", "#4D6BFE"] },
   };
   const xaiBarColor = () => theme() === "dark" ? "#c3c7cf" : "#49515e";
   function barPaint(vendor) {
@@ -347,6 +348,21 @@
     return `<defs>${gradients}<pattern id="bars-xai" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">` +
       `<rect width="7" height="7" fill="${xaiBarColor()}"/><rect width="1" height="7" fill="${palette().page}" fill-opacity="0.24"/>` +
       `</pattern></defs>`;
+  }
+  function deepseekWaterBar(cx, top, base, width, whaleSize) {
+    const h = base - top;
+    const nozzle = base + 7 + whaleSize / 4;
+    const blue = theme() === "dark" ? "#91DFFF" : "#269FE8";
+    // A narrow jet rises from the whale's back and opens into a fountain.
+    // Its highest droplet is exactly at the score, never above the data value.
+    return `<g class="deepseek-water" transform="translate(${cx},0) scale(${width / 24},1)" aria-hidden="true">` +
+      `<path class="bar-body" fill="url(#bars-deepseek-water)" d="M-3.5,${nozzle} C-3.6,${base - h * .38} -5.5,${top + h * .28} -8,${top + 11} Q-10,${top + 5} -12,${top + 9} C-12,${top + 1} -5,${top + 2} 0,${top + 7} C5,${top + 2} 12,${top + 1} 12,${top + 9} Q10,${top + 5} 8,${top + 11} C4,${top + h * .28} -.2,${base - h * .38} -.5,${nozzle} Z"/>` +
+      `<path d="M-2,${nozzle - 1} C-2,${base - h * .4} -1.5,${top + h * .25} 0,${top + 13}" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="1"/>` +
+      `<path class="bar-cap" d="M-12,${top + 9} C-12,${top + 1} -5,${top + 2} 0,${top + 7} C5,${top + 2} 12,${top + 1} 12,${top + 9}" fill="none" stroke="${blue}" stroke-width="1.5" stroke-linecap="round"/>` +
+      `<path d="M0,${top} C-3,${top + 3} -2,${top + 5} 0,${top + 5} C2,${top + 5} 3,${top + 3} 0,${top} Z" fill="${blue}"/>` +
+      `<ellipse cx="-14" cy="${top + 14}" rx="1.2" ry="2" fill="${blue}" transform="rotate(28,-14,${top + 14})"/>` +
+      `<ellipse cx="14" cy="${top + 13}" rx="1.2" ry="2" fill="${blue}" transform="rotate(-28,14,${top + 13})"/>` +
+      `</g>`;
   }
   function renderBars() {
     const C = palette();
@@ -408,15 +424,19 @@
       const path = `M${x0},${base}V${top}H${x0 + barW}V${base}Z`;
       const src = logoSrc(r, theme());
       const paint = barPaint(r.vendor);
+      const isWhale = r.vendor === "DeepSeek";
+      const iconSize = isWhale ? 20 : 16;
       const label = `${configName(r)}. ${axisNames[barsAxis]} ${score(v, barsAxis === "overall" ? 2 : 1)}.`;
       svg.push(
         `<g class="bar-col" data-run="${escape(r.run)}" tabindex="${i === 0 ? 0 : -1}" role="img" aria-label="${escape(label)}">` +
           `<rect class="hit" x="${cx - pitch / 2}" y="${T - 18}" width="${pitch}" height="${plotH + 18 + 34}" rx="3"/>` +
-          drawBar(path, paint.body) +
-          `<rect class="bar-cap" x="${x0}" y="${top}" width="${barW}" height="${Math.min(2, h)}" fill="${paint.cap}" aria-hidden="true"/>` +
+          (isWhale
+            ? deepseekWaterBar(cx, top, base, barW, iconSize)
+            : drawBar(path, paint.body) +
+              `<rect class="bar-cap" x="${x0}" y="${top}" width="${barW}" height="${Math.min(2, h)}" fill="${paint.cap}" aria-hidden="true"/>`) +
           `<text x="${cx}" y="${top - 6}" text-anchor="middle" font-size="${valueSize}" font-weight="600" fill="${C.ink}">${score(v, 1)}</text>` +
           (src
-            ? `<image href="${escape(src)}" x="${cx - 8}" y="${base + 9}" width="16" height="16" aria-hidden="true"/>`
+            ? `<image href="${escape(src)}" x="${cx - iconSize / 2}" y="${base + (isWhale ? 7 : 9)}" width="${iconSize}" height="${iconSize}" aria-hidden="true"/>`
             : "") +
           `<text transform="translate(${cx + 4},${base + 36}) rotate(-45)" text-anchor="end" font-size="12.5" fill="${C.ink}">${escape(
             r.name,
