@@ -66,6 +66,15 @@ and resume is on by default. Keep the judge model and frame sampling fixed when
 you reuse a shared bank. Use a separate results directory if you change the
 judging protocol.
 
+Multiple-choice requests include the question and its separate `options` field,
+preserving the option labels and order. This applies to source-video,
+rendered-video, and text-only requests; questions without options are unchanged.
+Answers cached by versions that omitted these options must be regenerated for
+both source and rendered videos (and the text-only baseline, if used). Preserve
+the old results and use a fresh results directory and run outputs for the corrected
+protocol. `--force` only clears a run's Dual VQA outputs; it does not invalidate
+the shared source-video or text-only answer banks.
+
 Each run directory receives two outputs.
 
 - `dual_vqa.jsonl` stores the answers, source-correct flags, and retention for
